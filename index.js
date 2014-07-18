@@ -45,17 +45,18 @@ function setAlarm(lon, lat) {
 }
 
 $.ajax({
-	//url : "https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20html%20where%20url%3D'http%3A%2F%2Fwww.oref.org.il%2FWarningMessages%2Falerts.json'&format=json&diagnostics=true&callback=?",
-	url : "oref.json",
+	//url : "https://query.yahooapis.com/v1/public/yql?q=select * from html where url='http://www.oref.org.il/WarningMessages/alerts.json'&format=json&diagnostics=true&callback=?",
+	//url : "http://www.oref.org.il/WarningMessages/alerts.json&callback=?", //CONVERT(html USING utf8)
+	url: "oref.json",
 	type : 'GET',
 	//crossDomain: true,
 	//data : "json", 
 	dataType : "json",
 	success : function(res) {
 		// get oref regions array
-		console.log('res',res);
-		//console.log('res',res.query.results.body.p);
-		//if(false)
+		// console.log('res',res);
+		// console.log('res',res.query.results.body.p);
+		
 		$.each(res.data, function(i, region) {
 			//console.log(region);
 			$.ajax({
@@ -86,7 +87,7 @@ $.ajax({
 		});
 
 	},
-	error : function(data) {console.log("error loading regions");}
+	error : function(data) {console.log("error loading regions "+data.status+" "+data.statusText);}
 }); 
 
 /*
