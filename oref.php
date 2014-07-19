@@ -25,13 +25,12 @@ function get_data($url) {
 
 $data = get_data("http://www.oref.org.il/WarningMessages/alerts.json");
 $data = json_decode(mb_convert_encoding($data,'UTF-8','UTF-16'));
-echo "avishay";
 
-// for($i = 0; $i < sizeof($data->data); $i++) {
-    // $dest .= $data->data[$i];
-    // //echo $data->data[$i].":";
-    // echo $dest."<br />";
-// }
+for($i = 0; $i < sizeof($data->data); $i++) {
+    $dest .= $data->id;
+    //echo $data->data[$i].":";
+    echo $dest."<br />";
+}
 ?>
 </body>
 </html>
