@@ -1,25 +1,17 @@
-var coords = [];
-function coordAlarm(lon, lat, time) {
-	var cord = {
-		longitude : lon,
-		lattitude : lat,
-		length : time
-	};
-	return coord;
-}
-
+var centerLan = 31.6018997;
+var centerLon = 35.2029117;
 var map;
+
 function initialize() {
 	var mapOptions = {
-		center : new google.maps.LatLng(31.6018997, 35.2029117),
+		center : new google.maps.LatLng(centerLan, centerLon),
 		zoom : 10
 	};
 	map = new google.maps.Map(document.getElementById("map"), mapOptions);
 }
-
 google.maps.event.addDomListener(window, 'load', initialize);
 
-function setAlarm(lon, lat) {
+function setAlarm(lon, lat , time) {
 	var alarmPosition = {
 		strokeColor : '#FF0000',
 		strokeOpacity : 0.8,
@@ -28,66 +20,56 @@ function setAlarm(lon, lat) {
 		fillOpacity : 0.35,
 		map : map,
 		center : new google.maps.LatLng(lon, lat),
-		radius : Math.sqrt(100) * 100
+		radius : Math.sqrt(150) * 100
 	};
 	// Add the circle for this city to the map.
-	cityCircle = new google.maps.Circle(alarmPosition);
-
+	var cityCircle = new google.maps.Circle(alarmPosition);
 	//trying to remove the circle after some time
-
-	function removeCircle() {
-		cityCircle.setMap(null);
-	}
-
 	setTimeout(function() {
-		removeCircle();
-	}, 3000);
+		cityCircle.setMap(null);
+	}, time*1000);
 }
 
 $.ajax({
-	//url : "https://query.yahooapis.com/v1/public/yql?q=select * from html where url='http://www.oref.org.il/WarningMessages/alerts.json'&format=json&diagnostics=true&callback=?",
-	//url : "http://www.oref.org.il/WarningMessages/alerts.json&callback=?", //CONVERT(html USING utf8)
-	url: "oref.json",
+	url : "oref.php",
 	type : 'GET',
-	//crossDomain: true,
-	//data : "json", 
 	dataType : "json",
 	success : function(res) {
-		// get oref regions array
-		// console.log('res',res);
-		// console.log('res',res.query.results.body.p);
-		
+		// get regions array from Pikud Ha Oref
+		console.log('res',res);
+		if(res.data)
 		$.each(res.data, function(i, region) {
-			//console.log(region);
 			$.ajax({
 				url : "regions.json",
 				type : 'GET',
 				data : "json",
 				success : function(res) {
-					// get city names that match the region , from the regions database
+					// get city names that match the region , from the regions json file
 					$.each(res, function(i, item) {
 						if (item.region == region) {
-							//console.log(item.city);
 							$.getJSON('https://maps.googleapis.com/maps/api/geocode/json?address= ' + item.city + '&language=he&key=AIzaSyBeOwVCCs-P50VpNqTL1Dd_5iRivtJ4I0A', function(res) {
-								// for each city get the coordinates
+								// for each city get the coordinates from google
 								$.each(res.results, function(i, f) {
 									var tmp = "" + item.city + ", ישראל";
 									if (tmp == f.formatted_address) {
-										console.log(tmp + " --- " + f.formatted_address);
-										setAlarm(f.geometry.location.lat, f.geometry.location.lng);
+										//console.log(tmp + " --- " + f.formatted_address);
+										//console.log(item.time);
+										setAlarm(f.geometry.location.lat, f.geometry.location.lng,item.time);
+										//Setting a new center according to the latest alarm
+										map.setZoom(12);      // This will trigger a zoom_changed on the map
+										map.setCenter(new google.maps.LatLng(f.geometry.location.lat, f.geometry.location.lng));
+										//map.setMapTypeId(google.maps.MapTypeId.ROADMAP);
 									}
 								});
 							});
 						}
-
 					});
 				},
 				error : function(data) {console.log("error loading city names");}
 			});
 		});
-
 	},
-	error : function(data) {console.log("error loading regions "+data.status+" "+data.statusText);}
+	error : function(data) {console.log("error loading regions");}
 }); 
 
 /*
