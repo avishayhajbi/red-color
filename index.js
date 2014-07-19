@@ -39,7 +39,8 @@ var refreshData = function() {
 		//dataType : "html",
 		success : function(res) {
 			// get regions array from Pikud Ha Oref
-			var res = res.responseText.split("<body>")[1].split("</body>")[0].trim().split(",");
+			try {var res = res.responseText.split("<body>")[1].split("</body>")[0].trim().split(",");}
+			catch (Exception){setTimeout(function (){refreshData();},10000);}
 			//console.log(res);
 			if (res.length)
 				$.each(res, function(i, region) {
