@@ -3,11 +3,6 @@
 <title>Online PHP Script Execution</title>
 </head>
 <body>
-<html>
-<head>
-<title>Online PHP Script Execution</title>
-</head>
-<body>
 <?php
 $dest = "";
 //header('Content-Type: text/html; charset=UTF-8'); 
@@ -41,5 +36,3 @@ for($i = 0; $i < sizeof($data->data); $i++) {
 </body>
 </html>
 
-</body>
-</html>
