@@ -34,7 +34,7 @@ function setAlarm(lon, lat, time) {
 
 var refreshData = function() {
 	$.ajax({
-		url : "http://avishay.eu5.org/redcolor/oref.php",
+		url : "oref.php",
 		type : 'GET',
 		//dataType : "html",
 		success : function(res) {
