@@ -5,7 +5,7 @@
 	<body>
 		<?php
 		$dest = "";
-		//header('Content-Type: text/html; charset=UTF-8');
+		header('Content-Type: text/html; charset=UTF-8');
 		error_reporting(E_ALL);
 		ini_set('display_errors', 1);
 		/* gets the data from a URL */
@@ -25,8 +25,11 @@
 
 		$data = get_data("http://www.oref.org.il/WarningMessages/alerts.json");
 		$data = json_decode(mb_convert_encoding($data, 'UTF-8', 'UTF-16'));
-		exit($data);
+		//exit(json_encode(($data->data)));
+		for ($i = 0; $i < sizeof($data -> data); $i++) {
+			$dest .= $data -> data[$i] . ",";
+		}
+		echo $dest;
 	?>
 </body>
 </html>
-

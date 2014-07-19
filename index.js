@@ -8,10 +8,12 @@ function initialize() {
 		zoom : 10
 	};
 	map = new google.maps.Map(document.getElementById("map"), mapOptions);
+	refreshData();
 }
+
 google.maps.event.addDomListener(window, 'load', initialize);
 
-function setAlarm(lon, lat , time) {
+function setAlarm(lon, lat, time) {
 	var alarmPosition = {
 		strokeColor : '#FF0000',
 		strokeOpacity : 0.8,
@@ -27,54 +29,65 @@ function setAlarm(lon, lat , time) {
 	//trying to remove the circle after some time
 	setTimeout(function() {
 		cityCircle.setMap(null);
-	}, time*1000);
+	}, time * 1000);
 }
 
-$.ajax({
-	url : "oref.php",
-	type : 'GET',
-	dataType : "json",
-	success : function(res) {
-		// get regions array from Pikud Ha Oref
-		console.log('res',res);
-		if(res.data)
-		$.each(res.data, function(i, region) {
-			$.ajax({
-				url : "regions.json",
-				type : 'GET',
-				data : "json",
-				success : function(res) {
-					// get city names that match the region , from the regions json file
-					$.each(res, function(i, item) {
-						if (item.region == region) {
-							$.getJSON('https://maps.googleapis.com/maps/api/geocode/json?address= ' + item.city + '&language=he&key=AIzaSyBeOwVCCs-P50VpNqTL1Dd_5iRivtJ4I0A', function(res) {
-								// for each city get the coordinates from google
-								$.each(res.results, function(i, f) {
-									var tmp = "" + item.city + ", ישראל";
-									if (tmp == f.formatted_address) {
-										//console.log(tmp + " --- " + f.formatted_address);
-										//console.log(item.time);
-										setAlarm(f.geometry.location.lat, f.geometry.location.lng,item.time);
-										//Setting a new center according to the latest alarm
-										map.setZoom(12);      // This will trigger a zoom_changed on the map
-										map.setCenter(new google.maps.LatLng(f.geometry.location.lat, f.geometry.location.lng));
-										//map.setMapTypeId(google.maps.MapTypeId.ROADMAP);
-									}
-								});
+var refreshData = function() {
+	$.ajax({
+		url : "http://avishay.eu5.org/redcolor/oref.php",
+		type : 'GET',
+		//dataType : "html",
+		success : function(res) {
+			// get regions array from Pikud Ha Oref
+			var res = res.responseText.split("<body>")[1].split("</body>")[0].trim().split(",");
+			//console.log(res);
+			if (res.length)
+				$.each(res, function(i, region) {
+					console.log(region);
+					$.ajax({
+						url : "regions.json",
+						type : 'GET',
+						data : "json",
+						success : function(res) {
+							// get city names that match the region , from the regions json file
+							$.each(res, function(i, item) {
+								if (item.region == region) {
+									$.getJSON('https://maps.googleapis.com/maps/api/geocode/json?address= ' + item.city + '&language=he&key=AIzaSyBeOwVCCs-P50VpNqTL1Dd_5iRivtJ4I0A', function(res) {
+										// for each city get the coordinates from google
+										$.each(res.results, function(i, f) {
+											var tmp = "" + item.city + ", ישראל";
+											if (tmp == f.formatted_address) {
+												//console.log(tmp + " --- " + f.formatted_address);
+												//console.log(item.time);
+												setAlarm(f.geometry.location.lat, f.geometry.location.lng, item.time);
+												//Setting a new center according to the latest alarm
+												map.setZoom(12);
+												// This will trigger a zoom_changed on the map
+												map.setCenter(new google.maps.LatLng(f.geometry.location.lat, f.geometry.location.lng));
+												//map.setMapTypeId(google.maps.MapTypeId.ROADMAP);
+											}
+										});
+									});
+								}
 							});
+						},
+						error : function(data) {
+							refreshData();
+							console.log("error loading city names");
 						}
 					});
-				},
-				error : function(data) {console.log("error loading city names");}
-			});
-		});
-	},
-	error : function(data) {console.log("error loading regions");}
-}); 
-
+				});
+				setTimeout(function (){refreshData();},2000);
+		},
+		error : function(data) {
+			refreshData();
+			console.log("error loading regions");
+		}
+	});
+};
 /*
-var marker = new google.maps.Marker({
-map : map,
-position : new google.maps.LatLng(31.768319, 35.21371) //map.getCenter()
-});
-*/
+ var marker = new google.maps.Marker({
+ map : map,
+ position : new google.maps.LatLng(31.768319, 35.21371) //map.getCenter()
+ });
+ */
