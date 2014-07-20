@@ -3,6 +3,7 @@ var centerLon = 35.2029117;
 var map;
 
 function initialize() {
+	initMapCss();
 	var mapOptions = {
 		center : new google.maps.LatLng(centerLan, centerLon),
 		zoom : 10
@@ -10,7 +11,10 @@ function initialize() {
 	map = new google.maps.Map(document.getElementById("map"), mapOptions);
 	refreshData();
 }
-
+function initMapCss(){
+	$("#map").css('width',$(window).width()+"px");
+	$("#map").css('height',$(window).height()+"px");
+}
 google.maps.event.addDomListener(window, 'load', initialize);
 
 function setAlarm(lon, lat, time) {
@@ -34,17 +38,21 @@ function setAlarm(lon, lat, time) {
 
 var refreshData = function() {
 	$.ajax({
-		url : "http://avishay.eu5.org/redcolor/oref.php",
+		//url : "https://query.yahooapis.com/v1/public/yql?q=select * from html where url='http://www.oref.org.il/WarningMessages/alerts.json'&format=json&diagnostics=true&callback=?",
+		//url : "http://www.oref.org.il/WarningMessages/alerts.json",
+		url: "http://avishay.eu5.org/redcolor/oref.php",
 		type : 'GET',
-		//dataType : "html",
-		success : function(res) {
+		async: false,
+		cache: false,
+		dataType: "",
+		success: function(res) {
 			// get regions array from Pikud Ha Oref
 			try {var res = res.responseText.split("<body>")[1].split("</body>")[0].trim().split(",");}
 			catch (Exception){setTimeout(function (){refreshData();},10000);}
-			//console.log(res);
-			if (res.length)
+			console.log(res);
+			if (res.responseText.length)
 				$.each(res, function(i, region) {
-					console.log(region);
+					//alert(res+" "+region);
 					$.ajax({
 						url : "regions.json",
 						type : 'GET',
@@ -73,18 +81,16 @@ var refreshData = function() {
 							});
 						},
 						error : function(data) {
-							refreshData();
 							console.log("error loading city names");
 						}
 					});
 				});
-				setTimeout(function (){refreshData();},3000);
 		},
 		error : function(data) {
-			refreshData();
 			console.log("error loading regions");
 		}
 	});
+	setTimeout(function (){refreshData();},3000);
 };
 /*
  var marker = new google.maps.Marker({
