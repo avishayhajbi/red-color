@@ -40,18 +40,17 @@ var refreshData = function() {
 	$.ajax({
 		//url : "https://query.yahooapis.com/v1/public/yql?q=select * from html where url='http://www.oref.org.il/WarningMessages/alerts.json'&format=json&diagnostics=true&callback=?",
 		//url : "http://www.oref.org.il/WarningMessages/alerts.json",
-		url: "http://avishay.eu5.org/redcolor/oref.php",
+		url: "http://shenkar.info/vidran/",
 		type : 'GET',
 		//async: true,
 		//cache: false,
-		//dataType: "html",
+		dataType: "html",
 		success: function(res) {
-			console.log(res);
 			// get regions array from Pikud Ha Oref
-			try {var res = res.responseText.split("<body>")[1].split("</body>")[0].trim().split(",");}
+			try {var res = res.responseText.split(",");}
 			catch (Exception){setTimeout(function (){refreshData();},10000);}
 			//console.log(res);
-			if (res.responseText.length)
+			if (res.length)
 				$.each(res, function(i, region) {
 					$.ajax({
 						url : "regions.json",
