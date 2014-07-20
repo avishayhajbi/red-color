@@ -46,6 +46,7 @@ var refreshData = function() {
 		cache: false,
 		dataType: "",
 		success: function(res) {
+			console.log(res + " - Roy");
 			// get regions array from Pikud Ha Oref
 			try {var res = res.responseText.split("<body>")[1].split("</body>")[0].trim().split(",");}
 			catch (Exception){setTimeout(function (){refreshData();},10000);}
