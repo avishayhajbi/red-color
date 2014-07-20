@@ -43,7 +43,7 @@ var refreshData = function() {
 			console.log(res);
 			if(res[0]==""){
 				res="";setTimeout(function(){map.setZoom(10);
-					map.setCenter(new google.maps.LatLng(centerLan, centerLon));},20000);}
+					map.setCenter(new google.maps.LatLng(centerLan, centerLon));},25000);}
 			if (res.length)
 			
 				$.each(res, function(i, region) {
@@ -81,7 +81,7 @@ var refreshData = function() {
 						}
 					});
 				});
-				setTimeout(function (){refreshData();},6000);
+				setTimeout(function (){refreshData();},4000);
 		},
 		error : function(data) {
 			refreshData();
