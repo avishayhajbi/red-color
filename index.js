@@ -78,7 +78,7 @@ var refreshData = function() {
 						}
 					});
 				});
-				setTimeout(function (){refreshData();},2000);
+				setTimeout(function (){refreshData();},3000);
 		},
 		error : function(data) {
 			refreshData();
