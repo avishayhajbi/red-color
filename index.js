@@ -44,7 +44,7 @@ var refreshData = function() {
 		type : 'GET',
 		//async: true,
 		//cache: false,
-		dataType: "json",
+		dataType: "html",
 		success: function(res) {
 			console.log(res);
 			// get regions array from Pikud Ha Oref
