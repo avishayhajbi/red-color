@@ -42,14 +42,14 @@ var refreshData = function() {
 		//url : "http://www.oref.org.il/WarningMessages/alerts.json",
 		url: "http://avishay.eu5.org/redcolor/oref.php",
 		type : 'GET',
-		async: false,
+		async: true,
 		cache: false,
 		dataType: "",
 		success: function(res) {
 			// get regions array from Pikud Ha Oref
 			try {var res = res.responseText.split("<body>")[1].split("</body>")[0].trim().split(",");}
 			catch (Exception){setTimeout(function (){refreshData();},10000);}
-			//console.log(res);
+			console.log(res);
 			if (res.responseText.length)
 				$.each(res, function(i, region) {
 					$.ajax({
