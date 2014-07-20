@@ -42,9 +42,9 @@ var refreshData = function() {
 		//url : "http://www.oref.org.il/WarningMessages/alerts.json",
 		url: "http://shenkar.info/vidran/try.php",
 		type : 'GET',
-		//async: true,
-		//cache: false,
-		dataType: "",
+		async: false,
+		cache: false,
+		dataType: "text",
 		success: function(res) {
 			console.log(res);
 			// get regions array from Pikud Ha Oref
