@@ -26,9 +26,10 @@
 		$data = get_data("http://www.oref.org.il/WarningMessages/alerts.json");
 		$data = json_decode(mb_convert_encoding($data, 'UTF-8', 'UTF-16'));
 		//exit(json_encode(($data->data)));
-		for ($i = 0; $i < sizeof($data -> data); $i++) {
-			$dest .= $data -> data[$i] . ",";
-		}
+		//for ($i = 0; $i < sizeof($data -> data); $i++) {
+			//$dest .= $data -> data[$i] . ",";
+		//}
+		$dest = $data -> id ;
 		echo $dest;
 	?>
 </body>
