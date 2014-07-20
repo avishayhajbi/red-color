@@ -42,8 +42,8 @@ var refreshData = function() {
 		//url : "http://www.oref.org.il/WarningMessages/alerts.json",
 		url: "http://shenkar.info/vidran/try.php",
 		type : 'GET',
-		async: false,
-		cache: false,
+		//async: false,
+		//cache: false,
 		//dataType: "text",
 		success: function(res) {
 			console.log(res);
