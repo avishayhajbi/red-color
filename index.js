@@ -44,12 +44,13 @@ var refreshData = function() {
 		type : 'GET',
 		//async: true,
 		//cache: false,
-		dataType: "html",
+		//dataType: "html",
 		success: function(res) {
+			console.log(res);
 			// get regions array from Pikud Ha Oref
 			try {var res = res.responseText.split(",");}
 			catch (Exception){setTimeout(function (){refreshData();},10000);}
-			//console.log(res);
+			
 			if (res.length)
 				$.each(res, function(i, region) {
 					$.ajax({
