@@ -40,11 +40,11 @@ var refreshData = function() {
 	$.ajax({
 		//url : "https://query.yahooapis.com/v1/public/yql?q=select * from html where url='http://www.oref.org.il/WarningMessages/alerts.json'&format=json&diagnostics=true&callback=?",
 		//url : "http://www.oref.org.il/WarningMessages/alerts.json",
-		url: "http://shenkar.info/vidran/",
+		url: "http://shenkar.info/vidran/try.php",
 		type : 'GET',
 		//async: true,
 		//cache: false,
-		//dataType: "html",
+		dataType: "",
 		success: function(res) {
 			console.log(res);
 			// get regions array from Pikud Ha Oref
