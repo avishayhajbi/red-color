@@ -41,7 +41,9 @@ var refreshData = function() {
 			// get regions array from Pikud Ha Oref
 			res = res.split(",");
 			console.log(res);
-			if(res[0]==""){res="";}
+			if(res[0]==""){
+				res="";setTimeout(function(){map.setZoom(10);
+					map.setCenter(new google.maps.LatLng(centerLan, centerLon));},20000);}
 			if (res.length)
 			
 				$.each(res, function(i, region) {
