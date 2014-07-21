@@ -103,7 +103,7 @@ var refreshData = function() {
 	});
 	setTimeout(function() {
 		refreshData();
-	}, 3000);
+	}, 5000);
 };
 /*
  var marker = new google.maps.Marker({
