@@ -57,6 +57,15 @@ var refreshData = function() {
 			//if Json data string output string from Pikud Ha Oref is not empty
 			if (res.length)
 			console.log(res.length);
+			if(res.length>2){
+				//Setting a new center according to the latest alarm
+				map.setZoom(11);
+				}
+				else
+				{//Setting a new center according to the latest alarm
+					map.setZoom(10);
+				}
+
 				$.each(res, function(i, region) {
 					$.ajax({
 						url : "regions.json",
@@ -68,14 +77,6 @@ var refreshData = function() {
 								if (item.region == region) {
 									$.getJSON('https://maps.googleapis.com/maps/api/geocode/json?address= ' + item.city + '&language=he&key=AIzaSyBeOwVCCs-P50VpNqTL1Dd_5iRivtJ4I0A', function(res) {
 										console.log(res.length);
-										if(res.length>2){
-											//Setting a new center according to the latest alarm
-											map.setZoom(11);
-										}
-										else
-										{//Setting a new center according to the latest alarm
-											map.setZoom(10);
-										}
 										
 										// for each city get the coordinates from google
 										$.each(res.results, function(i, f) {
