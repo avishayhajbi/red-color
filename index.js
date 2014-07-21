@@ -1,5 +1,5 @@
-var centerLan = 31.6018997;
-var centerLon = 35.2029117;
+var centerLan = 31.534559; 
+var centerLon = 34.756404;
 var map;
 
 function initialize() {
@@ -20,13 +20,13 @@ google.maps.event.addDomListener(window, 'load', initialize);
 function setAlarm(lon, lat, time) {
 	var alarmPosition = {
 		strokeColor : '#FF0000',
-		strokeOpacity : 0.8,
+		strokeOpacity : 0.4,
 		strokeWeight : 0,
 		fillColor : '#FF0000',
-		fillOpacity : 0.35,
+		fillOpacity : 0.25,
 		map : map,
 		center : new google.maps.LatLng(lon, lat),
-		radius : Math.sqrt(150) * 100
+		radius : Math.sqrt(150) * 200
 	};
 	// Add the circle for this city to the map.
 	var cityCircle = new google.maps.Circle(alarmPosition);
@@ -38,9 +38,7 @@ function setAlarm(lon, lat, time) {
 
 var refreshData = function() {
 	$.ajax({
-		//url : "https://query.yahooapis.com/v1/public/yql?q=select * from html where url='http://www.oref.org.il/WarningMessages/alerts.json'&format=json&diagnostics=true&callback=?",
-		//url : "http://www.oref.org.il/WarningMessages/alerts.json",
-		url: "http://shenkar.info/vidran/try.php",
+		url : "http://www.shenkar.info/vidran/index.php",
 		type : 'GET',
 		//async: false,
 		//cache: false,
@@ -48,10 +46,13 @@ var refreshData = function() {
 		success: function(res) {
 			console.log(res);
 			// get regions array from Pikud Ha Oref
-			try {var res = res.responseText.split(",");}
-			catch (Exception){setTimeout(function (){refreshData();},10000);}
-			
+			res = res.split(",");
+			console.log(res);
+			if(res[0]==""){
+				res="";setTimeout(function(){map.setZoom(10);
+					map.setCenter(new google.maps.LatLng(centerLan, centerLon));},25000);}
 			if (res.length)
+			
 				$.each(res, function(i, region) {
 					$.ajax({
 						url : "regions.json",
