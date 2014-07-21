@@ -46,11 +46,11 @@ var refreshData = function() {
 		success: function(res) {
 			// get regions array from Pikud Ha Oref
 			res = res.split(",");
-			if(res[0]==""){
+			/*if(res[0]==""){
 				res="";
 				setTimeout(function(){map.setZoom(10);
 				map.setCenter(new google.maps.LatLng(centerLan, centerLon));},25000);
-			}
+			}*/
 			if (res.length)
 				$.each(res, function(i, region) {
 					$.ajax({
@@ -93,8 +93,8 @@ var refreshData = function() {
 	setTimeout(function (){refreshData();},3000);
 };
 /*
- var marker = new google.maps.Marker({
- map : map,
- position : new google.maps.LatLng(31.768319, 35.21371) //map.getCenter()
- });
- */
+var marker = new google.maps.Marker({
+map : map,
+position : new google.maps.LatLng(31.768319, 35.21371) //map.getCenter()
+});
+*/
