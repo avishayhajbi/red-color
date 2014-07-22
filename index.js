@@ -6,7 +6,10 @@ function initialize() {
 	initMapCss();
 	var mapOptions = {
 		center : new google.maps.LatLng(centerLan, centerLon),
-		zoom : 10
+		zoom : 10,
+		panControl: false,
+   		zoomControl: false,
+   		scaleControl: false
 	};
 	map = new google.maps.Map(document.getElementById("map"), mapOptions);
 	refreshData();
@@ -41,24 +44,17 @@ function setAlarm(lon, lat, time) {
 var refreshData = function() {
 	//Retrieveing the Json data output from Pikud Ha Oref
 	$.ajax({
-		url : "http://www.shenkar.info/vidran/index.php",
+		//url : "http://www.shenkar.info/vidran/index.php",
+		url : "http://vandervidi.com/red-color/alert.php",
 		type : 'GET',
 		success : function(res) {
+			//console.log(res);
 			// get regions array from Pikud Ha Oref
 			res = res.split(",");
 
 			//If the Json data output string from Pikud Ha Oref returns an empty arrey then set zoom to the original value ,10.
-			if (!res[0].length){res = "";}
-				// setTimeout(function() {
-					// map.setZoom(10);
-					// //map.setCenter(new google.maps.LatLng(centerLan, centerLon));
-				// }, 10000);
-			
-			//if Json data string output string from Pikud Ha Oref is not empty
-			
-			//if (res.length)
-				//console.log('number of regions',res.length);
-			
+			if (res[0]==" 	"){res = "";}
+
 			switch (res.length){
 				case 0: {map.setZoom(10);break;}
 				case 1: {map.setZoom(12);break;}
