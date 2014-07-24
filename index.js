@@ -3,17 +3,17 @@ var centerLon = 34.756404;
 var currentAlarms =[];
 var map;
 
-function currAlarm (city , region , time,lat,lng) {
+function currAlarm (region , time,lat,lng) {
 	var curr = new Date().getTime();
-  var item ={
-  	city : city,
-  	region : region,
-  	shelter: time,
-  	created : curr,
-  	lat: lat,
-  	lng:lng
-  };
-  return item;
+ 	var item ={
+  		cities : [],
+  		region : region,
+  		shelter: time,
+  		created : curr,
+  		lat: lat,
+  		lng:lng
+	};
+	return item;
 }
 
 function initialize() {
@@ -58,8 +58,8 @@ function setAlarm(lon, lat, time) {
 var refreshData = function() {
 	//Retrieveing the Json data output from Pikud Ha Oref
 	$.ajax({
-		//url : "http://www.vandervidi.com/red-color/test.php",
-		url : "http://vandervidi.com/red-color/alert.php",
+		url : "http://www.vandervidi.com/red-color/test.php",
+		//url : "http://vandervidi.com/red-color/alert.php",
 		type : 'GET',
 		success : function(res) {
 			//console.log(res);
@@ -80,11 +80,11 @@ var refreshData = function() {
 					type : 'GET',
 					data : "json",
 					success : function(res) {
-						if (!regionAlreadyExist(region))
-						// get city names that match the region , from the regions json file
-						$.each(res, function(i, item) {
+						if (!regionAlreadyExist(region)) {
+							var tempRegion = currAlarm();
+							tempRegion.region=region;
+						$.each(res, function(i, item) {// get city names that match the region , from the regions json file
 							if (item.region == region) {
-								//$.getJSON('https://maps.googleapis.com/maps/api/geocode/json?address=' + item.city + '&language=he&key=AIzaSyDBLBNSgwXPs8R7uH-Ea3zWy3frKNS-lng', function(res) {
 									$.getJSON('http://maps.googleapis.com/maps/api/geocode/json?address=' + item.city + '&language=he&sensor=true', function(res) {
 									// for each city get the coordinates from google
 									$.each(res.results, function(i, f) {
@@ -99,12 +99,19 @@ var refreshData = function() {
 											map.setCenter(new google.maps.LatLng(f.geometry.location.lat, f.geometry.location.lng));
 											//Return the zoom attribute to its original value after the alarm.
 											//setTimeout(function(){map.setCenter(new google.maps.LatLng(centerLan, centerLon));map.setZoom(10);},item.time*500);
-											currentAlarms.push(currAlarm(item.city,region,item.time,f.geometry.location.lat,f.geometry.location.lng));
+											//(,item.time,f.geometry.location.lat,f.geometry.location.lng));
+											tempRegion.time = region;
+											tempRegion.shelter=item.time;
+											tempRegion.lat = f.geometry.location.lat;
+											tempRegion.lng = f.geometry.location.lng;
+											tempRegion.cities.push(item.city);
 										}
 									});
 								});
 							}
 						});
+						currentAlarms.push(tempRegion);
+						}
 					},
 					error : function(data) {
 						console.log("error loading city names");
@@ -131,21 +138,28 @@ function regionAlreadyExist(region){
 
 function updateAlarmsArray(){
 	var check=0;
-	// console.table(currentAlarms);
 	for (var i=0; i< currentAlarms.length;i++){
 		if((currentAlarms[i].created+currentAlarms[i].shelter*1000) < new Date().getTime()){
 			check++;
 			currentAlarms.splice(i,1);
-			if (i>0)
+			updateList();
+			if (i>0){
 				map.setCenter(new google.maps.LatLng(currentAlarms[i-1].lat, currentAlarms[i-1].lng));
+			}
 			i--;
 		}
 	}
 	
 	if(currentAlarms.length==0){
-		$("#current_alarms").html('');
+		//$("#current_alarms").html("'אין התראות כרגע ברוך ה");
 	}
-	// console.table(currentAlarms);
+}
+function updateList(){
+	$("#current_alarms").html(" ");
+	for (var i=0;i<currentAlarms.length;i++){
+		for (var j=0;j<currentAlarms[i].cities.length;j++)
+			$("#current_alarms").append("<span style='color:white; text-align:center;'> "+currentAlarms[i].cities[j]+", </span>");
+	}
 }
 /*
  var marker = new google.maps.Marker({
