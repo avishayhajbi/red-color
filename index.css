@@ -2,3 +2,27 @@
 	margin: 0;
 	padding: 0
 }
+#nav{
+	text-align:right;
+	display: inline-block;
+	position: fixed;
+	padding:5px 10px 5px 10px;
+	width: 100%;
+	height: auto;
+	background-color: #FF0000;
+	z-index: 1;
+}
+#nav h3{
+	color:white;
+	display: block;
+	text-align: center;
+}
+#current_alarms{
+	color:white;
+	display: block;
+	text-align: center;
+	padding-right:15px;
+	font-size: 14px;
+}
+#current_alarms span{
+}
