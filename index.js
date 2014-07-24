@@ -17,6 +17,7 @@ function currAlarm (region , time,lat,lng) {
 }
 
 function initialize() {
+	$.ajaxSetup({cache:false});
 	initMapCss();
 	var mapOptions = {
 		center : new google.maps.LatLng(centerLan, centerLon),
@@ -58,8 +59,8 @@ function setAlarm(lon, lat, time) {
 var refreshData = function() {
 	//Retrieveing the Json data output from Pikud Ha Oref
 	$.ajax({
-		//url : "http://www.vandervidi.com/red-color/test.php",
-		url : "http://vandervidi.com/red-color/alert.php",
+		url : "http://www.vandervidi.com/red-color/test.php",
+		//url : "http://vandervidi.com/red-color/alert.php",
 		type : 'GET',
 		success : function(res) {
 			//console.log(res);
@@ -74,6 +75,7 @@ var refreshData = function() {
 				default: {map.setZoom(11);break;}
 			}
 			updateAlarmsArray();
+			if (!res[0] == "")
 			$.each(res, function(i, region) {
 				$.ajax({
 					url : "regions.json",
@@ -81,6 +83,9 @@ var refreshData = function() {
 					data : "json",
 					success : function(res) {
 						if (!regionAlreadyExist(region)) {
+							if($("#current_alarms").html()== "אין התראות כרגע"){
+								$("#current_alarms").html(" ");
+							}
 							var tempRegion = currAlarm();
 							tempRegion.region=region;
 						$.each(res, function(i, item) {// get city names that match the region , from the regions json file
@@ -88,11 +93,10 @@ var refreshData = function() {
 									$.getJSON('http://maps.googleapis.com/maps/api/geocode/json?address=' + item.city + '&language=he&sensor=true', function(res) {
 									// for each city get the coordinates from google
 									$.each(res.results, function(i, f) {
-										// currentAlarms = document.getElementById("current_alarms");
-										// currentAlarms.innerHTML=currentAlarms.innerHTML+" "+item.city;
-										$("#current_alarms").append("<span style='color:white; text-align:center;'> "+item.city+", </span>");
+										//console.log(item.city);
 										var tmp = "" + item.city + ", ישראל";
-										if (tmp == f.formatted_address) {
+										if (tmp == f.formatted_address || item.city==f.formatted_address) {
+											$("#current_alarms").append("<span style='color:white; text-align:center;'> "+item.city+", </span>");
 											//Creating new alarm
 											setAlarm(f.geometry.location.lat, f.geometry.location.lng, item.time);
 											// This will set the map center to the center of the alarm location
@@ -100,7 +104,6 @@ var refreshData = function() {
 											//Return the zoom attribute to its original value after the alarm.
 											//setTimeout(function(){map.setCenter(new google.maps.LatLng(centerLan, centerLon));map.setZoom(10);},item.time*500);
 											//(,item.time,f.geometry.location.lat,f.geometry.location.lng));
-											tempRegion.time = region;
 											tempRegion.shelter=item.time;
 											tempRegion.lat = f.geometry.location.lat;
 											tempRegion.lng = f.geometry.location.lng;
@@ -111,6 +114,7 @@ var refreshData = function() {
 							}
 						});
 						currentAlarms.push(tempRegion);
+						//console.log(currentAlarms);
 						}
 					},
 					error : function(data) {
@@ -137,10 +141,8 @@ function regionAlreadyExist(region){
 }
 
 function updateAlarmsArray(){
-	var check=0;
 	for (var i=0; i< currentAlarms.length;i++){
 		if((currentAlarms[i].created+currentAlarms[i].shelter*1000) < new Date().getTime()){
-			check++;
 			currentAlarms.splice(i,1);
 			updateList();
 			if (i>0){
@@ -149,16 +151,18 @@ function updateAlarmsArray(){
 			i--;
 		}
 	}
-	
-	if(currentAlarms.length==0){
-		//$("#current_alarms").html("'אין התראות כרגע ברוך ה");
+	if(currentAlarms.length==0 ){
+		$("#current_alarms").html(" ");
+		$("#current_alarms").html("אין התראות כרגע");
 	}
 }
 function updateList(){
 	$("#current_alarms").html(" ");
 	for (var i=0;i<currentAlarms.length;i++){
-		for (var j=0;j<currentAlarms[i].cities.length;j++)
-			$("#current_alarms").append("<span style='color:white; text-align:center;'> "+currentAlarms[i].cities[j]+", </span>");
+		for (var j=0;j<currentAlarms[i].cities.length;j++){
+			if ($("#current_alarms").text().indexOf(currentAlarms[i].cities[j]) == -1)
+				$("#current_alarms").append("<span style='color:white; text-align:center;'> "+currentAlarms[i].cities[j]+", </span>");
+		}
 	}
 }
 /*
