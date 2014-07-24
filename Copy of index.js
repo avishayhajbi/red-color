@@ -1,15 +1,8 @@
 var centerLan = 31.534559;
 var centerLon = 34.756404;
 var currentAlarms =[];
-var gaza=[Point(31.5337419, 34.5270167),Point(31.4976293, 34.4751719),Point(31.4796680, 34.4747441),Point(31.4607266, 34.3896873),Point(31.4607266, 34.3896873),
-Point(31.4403339, 34.4295128),Point(31.4703903, 34.4638450),Point(31.4092922, 34.3507231),Point(31.4042252, 34.3611915),Point(31.4707419, 34.4070167)];
 var map;
-function Point(lat,lon){
-	return {
-		lat:lon,
-		lon:lat
-	};
-}
+
 function currAlarm (region , time,lat,lng) {
 	var curr = new Date().getTime();
  	var item ={
@@ -22,11 +15,6 @@ function currAlarm (region , time,lat,lng) {
 	};
 	return item;
 }
-$( window ).resize(function() {
-	$("#map").css('width', $(window).width() + "px");
-	$("#map").css('height', $(window).height() + "px");
-	//map.setCenter(new google.maps.LatLng(centerLan,centerLon));
-});
 
 function initialize() {
 	$.ajaxSetup({cache:false});
@@ -98,7 +86,6 @@ var refreshData = function() {
 							if($("#current_alarms").html()== "אין התראות כרגע"){
 								$("#current_alarms").html(" ");
 							}
-							var gazaRandomLocation = parseInt(Math.random()*10);
 							var tempRegion = currAlarm();
 							tempRegion.region=region;
 						$.each(res, function(i, item) {// get city names that match the region , from the regions json file
@@ -112,7 +99,6 @@ var refreshData = function() {
 											$("#current_alarms").append("<span style='color:white; text-align:center;'> "+item.city+", </span>");
 											//Creating new alarm
 											setAlarm(f.geometry.location.lat, f.geometry.location.lng, item.time);
-											drawLines(f.geometry.location.lat, f.geometry.location.lng, item.time,gazaRandomLocation);
 											// This will set the map center to the center of the alarm location
 											map.setCenter(new google.maps.LatLng(f.geometry.location.lat, f.geometry.location.lng));
 											//Return the zoom attribute to its original value after the alarm.
@@ -178,24 +164,6 @@ function updateList(){
 				$("#current_alarms").append("<span style='color:white; text-align:center;'> "+currentAlarms[i].cities[j]+", </span>");
 		}
 	}
-}
-function drawLines(lon, lat, time,loc){
-	var gazaLon= gaza[9].lon;
-	var gazaLat= gaza[9].lat;
-	
-	var line = new google.maps.Polyline({
-            path: [new google.maps.LatLng(lon, lat), new google.maps.LatLng(gazaLon, gazaLat)],
-            strokeColor: '#FF0000',
-            strokeOpacity: 0.4,
-            strokeWeight: 2,
-            geodesic: true,
-            map: map,
-            lineColor: '#FF0000'
-        });
-        
-	setTimeout(function() {
-		line.setMap(null);
-	}, time*1000);
 }
 /*
  var marker = new google.maps.Marker({
