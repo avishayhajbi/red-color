@@ -10,18 +10,20 @@ function Point(lat,lon){
 		lon:lat
 	};
 }
-function currAlarm (region , time,lat,lng) {
+
+function currAlarm(region, time, lat, lng) {
 	var curr = new Date().getTime();
- 	var item ={
-  		cities : [],
-  		region : region,
-  		shelter: time,
-  		created : curr,
-  		lat: lat,
-  		lng:lng
+	var item = {
+		cities : [],
+		region : region,
+		shelter : time,
+		created : curr,
+		lat : lat,
+		lng : lng
 	};
 	return item;
 }
+
 $( window ).resize(function() {
 	$("#map").css('width', $(window).width() + "px");
 	$("#map").css('height', $(window).height() + "px");
@@ -29,18 +31,21 @@ $( window ).resize(function() {
 });
 
 function initialize() {
-	$.ajaxSetup({cache:false});
+	$.ajaxSetup({
+		cache : false
+	});
 	initMapCss();
 	var mapOptions = {
 		center : new google.maps.LatLng(centerLan, centerLon),
 		zoom : 10,
-		panControl: false,
-   		zoomControl: false,
-   		scaleControl: false
+		panControl : false,
+		zoomControl : false,
+		scaleControl : false
 	};
 	map = new google.maps.Map(document.getElementById("map"), mapOptions);
 	refreshData();
 }
+
 
 function initMapCss() {
 	$("#map").css('width', $(window).width() + "px");
@@ -48,6 +53,7 @@ function initMapCss() {
 }
 
 google.maps.event.addDomListener(window, 'load', initialize);
+
 
 function setAlarm(lon, lat, time) {
 	var alarmPosition = {
@@ -67,6 +73,7 @@ function setAlarm(lon, lat, time) {
 		cityCircle.setMap(null);
 	}, time * 1000);
 }
+
 
 var refreshData = function() {
 	//Retrieveing the Json data output from Pikud Ha Oref
@@ -98,6 +105,7 @@ var refreshData = function() {
 							if($("#current_alarms").html()== "אין התראות כרגע"){
 								$("#current_alarms").html(" ");
 							}
+							makeNoise();
 							var gazaRandomLocation = parseInt(Math.random()*10);
 							var tempRegion = currAlarm();
 							tempRegion.region=region;
@@ -145,58 +153,117 @@ var refreshData = function() {
 		refreshData();
 	}, 5000);
 };
-function regionAlreadyExist(region){
-	for (var i=0; i< currentAlarms.length;i++){
-		if (currentAlarms[i].region == region){
+
+function regionAlreadyExist(region) {
+	for (var i = 0; i < currentAlarms.length; i++) {
+		if (currentAlarms[i].region == region) {
 			return true;
 		}
 	}
 	return false;
 }
 
-function updateAlarmsArray(){
-	for (var i=0; i< currentAlarms.length;i++){
-		if((currentAlarms[i].created+currentAlarms[i].shelter*1000) < new Date().getTime()){
-			currentAlarms.splice(i,1);
+function updateAlarmsArray() {
+	for (var i = 0; i < currentAlarms.length; i++) {
+		if ((currentAlarms[i].created + currentAlarms[i].shelter * 1000) < new Date().getTime()) {
+			currentAlarms.splice(i, 1);
 			updateList();
-			if (i>0){
-				map.setCenter(new google.maps.LatLng(currentAlarms[i-1].lat, currentAlarms[i-1].lng));
+			if (i > 0) {
+				map.setCenter(new google.maps.LatLng(currentAlarms[i - 1].lat, currentAlarms[i - 1].lng));
 			}
 			i--;
 		}
 	}
-	if(currentAlarms.length==0 ){
+	if (currentAlarms.length == 0) {
 		$("#current_alarms").html(" ");
 		$("#current_alarms").html("אין התראות כרגע");
 	}
 }
-function updateList(){
+
+function updateList() {
 	$("#current_alarms").html(" ");
-	for (var i=0;i<currentAlarms.length;i++){
-		for (var j=0;j<currentAlarms[i].cities.length;j++){
+	for (var i = 0; i < currentAlarms.length; i++) {
+		for (var j = 0; j < currentAlarms[i].cities.length; j++) {
 			if ($("#current_alarms").text().indexOf(currentAlarms[i].cities[j]) == -1)
-				$("#current_alarms").append("<span style='color:white; text-align:center;'> "+currentAlarms[i].cities[j]+", </span>");
+				$("#current_alarms").append("<span style='color:white; text-align:center;'> " + currentAlarms[i].cities[j] + ", </span>");
 		}
 	}
 }
-function drawLines(lon, lat, time,loc){
-	var gazaLon= gaza[9].lon;
-	var gazaLat= gaza[9].lat;
-	
+
+function drawLines(lon, lat, time, loc) {
+	var gazaLon = gaza[9].lon;
+	var gazaLat = gaza[9].lat;
+
 	var line = new google.maps.Polyline({
-            path: [new google.maps.LatLng(lon, lat), new google.maps.LatLng(gazaLon, gazaLat)],
-            strokeColor: '#FF0000',
-            strokeOpacity: 0.4,
-            strokeWeight: 2,
-            geodesic: true,
-            map: map,
-            lineColor: '#FF0000'
-        });
-        
+		path : [new google.maps.LatLng(lon, lat), new google.maps.LatLng(gazaLon, gazaLat)],
+		strokeColor : '#FF0000',
+		strokeOpacity : 0.4,
+		strokeWeight : 2,
+		geodesic : true,
+		map : map,
+		lineColor : '#FF0000'
+	});
+
 	setTimeout(function() {
 		line.setMap(null);
-	}, time*1000);
+	}, time * 1000);
 }
+
+
+function makeNoise() {
+	myWindow = window.open("popup.html", "popupAlarms", "width=400, height=50 ");
+	myWindow.focus();
+	myWindow.focus();
+	popupOnTop(myWindow);
+	myWindow.document.write('<link rel="stylesheet" href="index.css" /><nav id="nav" data-rel="fixed" style="padding:40px;"><h3 style="padding-right:65px;">התראות צבע אדום בזמן אמת</h3><article id="popupAlarms"></article></nav>');
+	//myWindow.opener.document.write("<p>This is the source window!</p>");
+
+	/*	win.onload = function() {
+			var div = win.document.createElement('div')
+			div.innerHTML = 'Welcome into the future!'
+			div.style.fontSize = '30px'
+			win.document.body.insertBefore(div, win.document.body.firstChild)
+		}
+	*/
+
+	setTimeout(function() {
+		myWindow.close();
+	}, 2000);
+}
+function popupOnTop(myWindow){
+	 var hidden = "hidden";
+
+    // Standards:
+    if (hidden in document)
+        myWindow.document.addEventListener("visibilitychange", onchange);
+    else if ((hidden = "mozHidden") in document)
+        myWindow.document.addEventListener("mozvisibilitychange", onchange);
+    else if ((hidden = "webkitHidden") in document)
+        myWindow.document.addEventListener("webkitvisibilitychange", onchange);
+    else if ((hidden = "msHidden") in document)
+        myWindow.document.addEventListener("msvisibilitychange", onchange);
+    // IE 9 and lower:
+    else if ('onfocusin' in document)
+        myWindow.document.onfocusin = document.onfocusout = onchange;
+    // All others:
+    else
+        window.onpageshow = window.onpagehide 
+            = window.onfocus = window.onblur = onchange;
+
+    function onchange (evt) {
+        var v = 'visible', h = 'hidden',
+            evtMap = { 
+                focus:v, focusin:v, pageshow:v, blur:h, focusout:h, pagehide:h 
+            };
+
+        evt = evt || window.event;
+        if (evt.type in evtMap)
+            myWindow.document.body.className = evtMap[evt.type];
+        else        
+            myWindow.document.body.className = this[hidden] ? "hidden" : "visible";
+    }
+}
+
 /*
  var marker = new google.maps.Marker({
  map : map,
