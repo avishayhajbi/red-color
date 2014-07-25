@@ -211,25 +211,29 @@ function drawLines(lon, lat, time, loc) {
 
 
 function makeNoise() {
-	myWindow = window.open("popup.html", "popupAlarms", "width=400, height=50 ");
-	myWindow.focus();
-	myWindow.focus();
-	popupOnTop(myWindow);
-	myWindow.document.write('<link rel="stylesheet" href="index.css" /><nav id="nav" data-rel="fixed" style="padding:40px;"><h3 style="padding-right:65px;">התראות צבע אדום בזמן אמת</h3><article id="popupAlarms"></article></nav>');
-	myWindow.document.write('<iframe width="420" height="345" src="http://www.xo2.co.il/red_color.mp3?autoplay=1" frameborder="0" allowfullscreen></iframe>');
-	//<iframe width="420" height="345" src="http://www.xo2.co.il/red_color.mp3?autoplay=1" frameborder="0" allowfullscreen></iframe>
-	//myWindow.opener.document.write("<p>This is the source window!</p>");
-	/*	win.onload = function() {
-			var div = win.document.createElement('div')
-			div.innerHTML = 'Welcome into the future!'
-			div.style.fontSize = '30px'
-			win.document.body.insertBefore(div, win.document.body.firstChild)
-		}
-	*/
 
-	setTimeout(function() {
-		myWindow.close();
-	}, 3900);
+	try {
+		myWindow = window.open("popup.html", "popupAlarms", "width=400, height=50 ");
+		myWindow.focus();
+		myWindow.focus();
+		popupOnTop(myWindow);
+		myWindow.document.write('<link rel="stylesheet" href="index.css" /><nav id="nav" data-rel="fixed" style="padding:40px;"><h3 style="padding-right:65px;">התראות צבע אדום בזמן אמת</h3><article id="popupAlarms"></article></nav>');
+		myWindow.document.write('<iframe width="420" height="345" src="http://www.xo2.co.il/red_color.mp3?autoplay=1" frameborder="0" allowfullscreen></iframe>');
+		//<iframe width="420" height="345" src="http://www.xo2.co.il/red_color.mp3?autoplay=1" frameborder="0" allowfullscreen></iframe>
+		//myWindow.opener.document.write("<p>This is the source window!</p>");
+		/*	win.onload = function() {
+		 var div = win.document.createElement('div')
+		 div.innerHTML = 'Welcome into the future!'
+		 div.style.fontSize = '30px'
+		 win.document.body.insertBefore(div, win.document.body.firstChild)
+		 }
+		 */
+
+		setTimeout(function() {
+			myWindow.close();
+		}, 3900);
+	} catch(e) {console.log("confirm windows popup");}
+
 }
 function popupOnTop(myWindow){
 	 var hidden = "hidden";
