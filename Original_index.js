@@ -1,15 +1,7 @@
 var centerLan = 31.534559;
 var centerLon = 34.756404;
 var currentAlarms =[];
-var gaza=[Point(31.5337419, 34.5270167),Point(31.4976293, 34.4751719),Point(31.4796680, 34.4747441),Point(31.4607266, 34.3896873),Point(31.4607266, 34.3896873),
-Point(31.4403339, 34.4295128),Point(31.4703903, 34.4638450),Point(31.4092922, 34.3507231),Point(31.4042252, 34.3611915),Point(31.4707419, 34.4070167)];
 var map;
-function Point(lat,lon){
-	return {
-		lat:lon,
-		lon:lat
-	};
-}
 
 function currAlarm (region , time,lat,lng) {
 	var curr = new Date().getTime();
@@ -23,12 +15,6 @@ function currAlarm (region , time,lat,lng) {
 	};
 	return item;
 }
-
-$( window ).resize(function() {
-	$("#map").css('width', $(window).width() + "px");
-	$("#map").css('height', $(window).height() + "px");
-	//map.setCenter(new google.maps.LatLng(centerLan,centerLon));
-});
 
 function initialize() {
 	$.ajaxSetup({cache:false});
@@ -102,8 +88,6 @@ var refreshData = function() {
 							if($("#current_alarms").html()== "אין התרעות כרגע"){
 								$("#current_alarms").html(" ");
 							}
-							makeNoise();
-							var gazaRandomLocation = parseInt(Math.random()*10);
 							var tempRegion = currAlarm();
 							tempRegion.region=region;
 							
@@ -118,7 +102,6 @@ var refreshData = function() {
 											$("#current_alarms").append(item.city+", ");
 											//Creating new alarm
 											setAlarm(f.geometry.location.lat, f.geometry.location.lng, item.time);
-											drawLines(f.geometry.location.lat, f.geometry.location.lng, item.time,gazaRandomLocation);
 											// This will set the map center to the center of the alarm location
 											map.setCenter(new google.maps.LatLng(f.geometry.location.lat, f.geometry.location.lng));
 											//Return the zoom attribute to its original value after the alarm.
@@ -196,85 +179,4 @@ function updateList(){
 				$("#current_alarms").append(currentAlarms[i].cities[j]+", ");
 		}
 	}
-}
-
-function drawLines(lon, lat, time, loc) {
-	var gazaLon = gaza[9].lon;
-	var gazaLat = gaza[9].lat;
-
-	var line = new google.maps.Polyline({
-		path : [new google.maps.LatLng(lon, lat), new google.maps.LatLng(gazaLon, gazaLat)],
-		strokeColor : '#FF0000',
-		strokeOpacity : 0.4,
-		strokeWeight : 2,
-		geodesic : true,
-		map : map,
-		lineColor : '#FF0000'
-	});
-
-	setTimeout(function() {
-		line.setMap(null);
-	}, time * 1000);
-}
-
-
-function makeNoise() {
-
-	try {
-		myWindow = window.open("popup.html", "red-color", "width=400, height=50 ");
-		myWindow.focus();
-		myWindow.focus();
-		popupOnTop(myWindow);
-		myWindow.document.write('<link rel="stylesheet" href="index.css" /><nav id="nav" data-rel="fixed" style="padding:40px;"><h3 style="padding-right:65px;">התראות צבע אדום בזמן אמת</h3><article id="popupAlarms"></article></nav>');
-		myWindow.document.write('<iframe width="420" height="345" src="http://www.xo2.co.il/red_color.mp3?autoplay=1" frameborder="0" allowfullscreen></iframe>');
-
-		//<iframe width="420" height="345" src="http://www.xo2.co.il/red_color.mp3?autoplay=1" frameborder="0" allowfullscreen></iframe>
-		//myWindow.opener.document.write("<p>This is the source window!</p>");
-		/*	win.onload = function() {
-		 var div = win.document.createElement('div')
-		 div.innerHTML = 'Welcome into the future!'
-		 div.style.fontSize = '30px'
-		 win.document.body.insertBefore(div, win.document.body.firstChild)
-		 }
-		 */
-
-		setTimeout(function() {
-			myWindow.close();
-		}, 3900);
-	} catch(e) {console.log("confirm windows popup");}
-
-}
-
-function popupOnTop(myWindow){
-	 var hidden = "hidden";
-
-    // Standards:
-    if (hidden in document)
-        myWindow.document.addEventListener("visibilitychange", onchange);
-    else if ((hidden = "mozHidden") in document)
-        myWindow.document.addEventListener("mozvisibilitychange", onchange);
-    else if ((hidden = "webkitHidden") in document)
-        myWindow.document.addEventListener("webkitvisibilitychange", onchange);
-    else if ((hidden = "msHidden") in document)
-        myWindow.document.addEventListener("msvisibilitychange", onchange);
-    // IE 9 and lower:
-    else if ('onfocusin' in document)
-        myWindow.document.onfocusin = document.onfocusout = onchange;
-    // All others:
-    else
-        window.onpageshow = window.onpagehide 
-            = window.onfocus = window.onblur = onchange;
-
-    function onchange (evt) {
-        var v = 'visible', h = 'hidden',
-            evtMap = { 
-                focus:v, focusin:v, pageshow:v, blur:h, focusout:h, pagehide:h 
-            };
-
-        evt = evt || window.event;
-        if (evt.type in evtMap)
-            myWindow.document.body.className = evtMap[evt.type];
-        else        
-            myWindow.document.body.className = this[hidden] ? "hidden" : "visible";
-    }
 }
