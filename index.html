@@ -18,7 +18,9 @@
 		<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?language=en"></script>
 		<script type="text/javascript" src="http://www.google.com/jsapi"></script>
 		<link rel="stylesheet" href="includes/css/index.css" />
+		<link rel="stylesheet" href="includes/css/bootstrap.min.css" />
 		<script type="text/javascript" src="includes/js/index.js" ></script>
+		<script type="text/javascript" src="includes/js/bootstrap.min.js" ></script>
 		<script>
 		  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
 		  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -44,9 +46,37 @@
 			<article id="navContainer">
 				<section id="fb" class="fb-like" data-href="http://vandervidi.com/red-color/" data-layout="button_count" data-action="like" data-show-faces="true" data-share="true"></section>
 				<section id="title">התרעות צבע אדום בזמן אמת</section>
+				<section id="info"><a href="#" data-toggle="modal" data-target="#infoModal"><img src="images/Question.png"/ style="width: 50%;"></a></section>
 			</article>
 			<article id="current_alarms"> </article>
 		</nav>
 		<div id="map"> </div>
+
+		<!-- Modal -->
+		<div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		  <div class="modal-dialog">
+		    <div class="modal-content">
+		      <div class="modal-header" style="direction:rtl;text-align: center;">
+		        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+		        <h4 class="modal-title" id="myModalLabel"> אודות</h4>
+		      </div>
+		      <div class="modal-body" style="direction: rtl;">
+				הבהרה חשובה - אתר זה לא מהווה שום חלופה להוראות והנחיות פיקוד העורף.
+				המידע המוצג באתר הוא מידע שמותר לפירסום ומפורסם בין היתר בכלי התשורת ובאתר פיקוד העורף.
+				האתר מציג על המפה את האזעקות הפעילות ולא מציג שום מידע על נפילות טילים או יירוטים.
+						        
+			<br><br>	האתר נבנה על ידי אבישי חג'בי ווידרן אבדוביץ'.
+						       
+			<br>	ניתן ליצור איתנו קשר ב:
+			<br>	vandervidi@vandervidi.com
+			<br>	avishayHajbi@gmail.com
+
+		      </div>
+		      <div class="modal-footer">
+		        <button type="button" class="btn btn-default" data-dismiss="modal">סגור</button>
+		      </div>
+		    </div>
+		  </div>
+		</div>
 	</body>
 </html>
