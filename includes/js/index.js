@@ -24,10 +24,15 @@ function currAlarm(region, time, lat, lng) {
 	return item;
 }
 
+<<<<<<< HEAD:index.js
 $( window ).resize(function() {
 	$("#map").css('width', $(window).width() + "px");
 	$("#map").css('height', $(window).height() + "px");
 	//map.setCenter(new google.maps.LatLng(centerLan,centerLon));
+=======
+$(window).resize(function(){
+	initMapCss();
+>>>>>>> origin/gh-pages:includes/js/index.js
 });
 
 function initialize() {
@@ -82,33 +87,40 @@ var refreshData = function() {
 		url : "http://vandervidi.com/red-color/alert.php",
 		type : 'GET',
 		success : function(res) {
-			//console.log(res);
 			// get regions array from Pikud Ha Oref
 			res = res.split(",");
-			//If the Json data output string from Pikud Ha Oref returns an empty arrey then set zoom to the original value ,10.
-			if (res[0]==" 	"){res = "";}
-			
+			//console.log("res before : "+res);
+			res.splice(res.length-1,1);
+			//if (res[0]==""){res="";} //testing
+			//if (res[0]==" 	"){res="";}
+			//console.log(res);
 			switch (res.length){
-				case 0: {map.setZoom(10);break;}
 				case 1: {map.setZoom(12);break;}
-				default: {map.setZoom(11);break;}
+				case 2: {map.setZoom(11);break;}
+				//If the Json data output string from Pikud Ha Oref returns an empty arrey then set zoom to the original value ,10.
+				default: {map.setZoom(10);break;}
 			}
 			updateAlarmsArray();
-			if (!res[0] == "")
+			if (res.length>0)
 			$.each(res, function(i, region) {
 				$.ajax({
-					url : "regions.json",
+					url : "includes/json/regions.json",
 					type : 'GET',
 					data : "json",
 					success : function(res) {
 						if (!regionAlreadyExist(region)) {
-							if($("#current_alarms").html()== "אין התראות כרגע"){
+							if($("#current_alarms").html()== "אין התרעות כרגע"){
 								$("#current_alarms").html(" ");
 							}
+<<<<<<< HEAD:index.js
 							makeNoise();
 							var gazaRandomLocation = parseInt(Math.random()*10);
+=======
+							playAlertSound();
+>>>>>>> origin/gh-pages:includes/js/index.js
 							var tempRegion = currAlarm();
 							tempRegion.region=region;
+							
 						$.each(res, function(i, item) {// get city names that match the region , from the regions json file
 							if (item.region == region) {
 									$.getJSON('http://maps.googleapis.com/maps/api/geocode/json?address=' + item.city + '&language=he&sensor=true', function(res) {
@@ -117,7 +129,7 @@ var refreshData = function() {
 										//console.log(item.city);
 										var tmp = "" + item.city + ", ישראל";
 										if (tmp == f.formatted_address || item.city==f.formatted_address) {
-											$("#current_alarms").append("<span style='color:white; text-align:center;'> "+item.city+", </span>");
+											$("#current_alarms").append(item.city+", ");
 											//Creating new alarm
 											setAlarm(f.geometry.location.lat, f.geometry.location.lng, item.time);
 											drawLines(f.geometry.location.lat, f.geometry.location.lng, item.time,gazaRandomLocation);
@@ -154,15 +166,23 @@ var refreshData = function() {
 	}, 5000);
 };
 
+<<<<<<< HEAD:index.js
 function regionAlreadyExist(region) {
 	for (var i = 0; i < currentAlarms.length; i++) {
 		if (currentAlarms[i].region == region) {
+=======
+function regionAlreadyExist(region){
+	for (var i=0; i< currentAlarms.length;i++){
+		if (currentAlarms[i].region == region){
+			//console.log(region + " Already exists in current alarms array");
+>>>>>>> origin/gh-pages:includes/js/index.js
 			return true;
 		}
 	}
 	return false;
 }
 
+<<<<<<< HEAD:index.js
 function updateAlarmsArray() {
 	for (var i = 0; i < currentAlarms.length; i++) {
 		if ((currentAlarms[i].created + currentAlarms[i].shelter * 1000) < new Date().getTime()) {
@@ -170,26 +190,57 @@ function updateAlarmsArray() {
 			updateList();
 			if (i > 0) {
 				map.setCenter(new google.maps.LatLng(currentAlarms[i - 1].lat, currentAlarms[i - 1].lng));
+=======
+function updateAlarmsArray(){
+	for (var i=0; i< currentAlarms.length;i++){
+		if((currentAlarms[i].created + currentAlarms[i].shelter * 1000) < new Date().getTime()){
+			if (i==0){
+				currentAlarms=[];
+				updateList();
+				}
+			else{
+			currentAlarms.splice(i,1);
+			updateList();
 			}
-			i--;
+/*
+			if (i>0){ 
+				map.setCenter(new google.maps.LatLng(currentAlarms[i-1].lat, currentAlarms[i-1].lng));
+>>>>>>> origin/gh-pages:includes/js/index.js
+			}
+			i--;*/
+
 		}
 	}
+<<<<<<< HEAD:index.js
 	if (currentAlarms.length == 0) {
+=======
+	//console.log("CurrentAllarms size: " + currentAlarms.length);
+	if(currentAlarms.length==0 ){
+>>>>>>> origin/gh-pages:includes/js/index.js
 		$("#current_alarms").html(" ");
-		$("#current_alarms").html("אין התראות כרגע");
+		$("#current_alarms").html("אין התרעות כרגע");
 	}
 }
 
+<<<<<<< HEAD:index.js
 function updateList() {
+=======
+function updateList(){
+>>>>>>> origin/gh-pages:includes/js/index.js
 	$("#current_alarms").html(" ");
 	for (var i = 0; i < currentAlarms.length; i++) {
 		for (var j = 0; j < currentAlarms[i].cities.length; j++) {
 			if ($("#current_alarms").text().indexOf(currentAlarms[i].cities[j]) == -1)
+<<<<<<< HEAD:index.js
 				$("#current_alarms").append("<span style='color:white; text-align:center;'> " + currentAlarms[i].cities[j] + ", </span>");
+=======
+				$("#current_alarms").append(currentAlarms[i].cities[j]+", ");
+>>>>>>> origin/gh-pages:includes/js/index.js
 		}
 	}
 }
 
+<<<<<<< HEAD:index.js
 function drawLines(lon, lat, time, loc) {
 	var gazaLon = gaza[9].lon;
 	var gazaLat = gaza[9].lat;
@@ -276,3 +327,13 @@ function popupOnTop(myWindow){
  position : new google.maps.LatLng(31.768319, 35.21371) //map.getCenter()
  });
  */
+=======
+
+function playAlertSound() {
+embed = document.createElement("embed");
+embed.setAttribute("src", "sounds/alert.mp3");
+embed.setAttribute("hidden", true);
+embed.setAttribute("autostart", true);
+document.body.appendChild(embed);
+}
+>>>>>>> origin/gh-pages:includes/js/index.js
