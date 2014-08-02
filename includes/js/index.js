@@ -63,8 +63,8 @@ function setAlarm(lon, lat, time) {
 var refreshData = function() {
 	//Retrieveing the Json data output from Pikud Ha Oref
 	$.ajax({
-		//url : "http://www.vandervidi.com/red-color/test.php",
-		url : "http://vandervidi.com/red-color/alert.php",
+		//url : "test.php",
+		url : "alert.php",
 		type : 'GET',
 		success : function(res) {
 			// get regions array from Pikud Ha Oref
@@ -137,7 +137,7 @@ var refreshData = function() {
 	});
 	setTimeout(function() {
 		refreshData();
-	}, 5000);
+	}, 4000);
 };
 
 function regionAlreadyExist(region){
@@ -188,9 +188,9 @@ function updateList(){
 
 
 function playAlertSound() {
-embed = document.createElement("embed");
-embed.setAttribute("src", "sounds/alert.mp3");
-embed.setAttribute("hidden", true);
-embed.setAttribute("autostart", true);
-document.body.appendChild(embed);
+	embed = document.createElement("embed");
+	embed.setAttribute("src", "sounds/alert.mp3");
+	embed.setAttribute("hidden", true);
+	embed.setAttribute("autostart", true);
+	document.body.appendChild(embed);
 }
