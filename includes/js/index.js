@@ -64,7 +64,7 @@ var refreshData = function() {
 	//Retrieveing the Json data output from Pikud Ha Oref
 	$.ajax({
 		//url : "test.php",
-		url : "alert.php",
+		url : "http://www.israelredcolor.com/alert.php",
 		type : 'GET',
 		success : function(res) {
 			// get regions array from Pikud Ha Oref
