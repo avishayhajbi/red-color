@@ -1,6 +1,7 @@
 var centerLan = 31.534559;
 var centerLon = 34.756404;
 var currentAlarms =[];
+var userLocation= null;
 var map;
 
 function currAlarm (region , time,lat,lng) {
@@ -193,4 +194,72 @@ function playAlertSound() {
 	embed.setAttribute("hidden", true);
 	embed.setAttribute("autostart", true);
 	document.body.appendChild(embed);
+}
+
+
+/* get user location */
+
+$(document).ready(function(){
+	getLocation();
+});
+
+function getIpLocation() {
+	$.get("http://ipinfo.io/" + myip, function(response) {
+		//console.log(response); country region city loc
+		console.log(response);
+		longitude = response.loc.substring(0, response.loc.indexOf(","));
+		latitude = response.loc.substring(response.loc.indexOf(",") + 1, response.loc.length);
+		//console.log("IP location - " + longitude + " " + latitude);
+		getCountryName(longitude, latitude);
+	}, "jsonp");
+}
+
+function getLocation() {
+	navigator.geolocation.getCurrentPosition(showPosition, errorHandler);
+}
+
+function showPosition(position) {
+	//console.log("HTML5 location " + position.coords.latitude + " " + position.coords.longitude);
+	longitude = position.coords.latitude;
+	latitude = position.coords.longitude;
+	getCountryName(longitude, latitude);
+}
+
+function getCountryName(longitude, latitude) {
+	$.ajax({
+		url : 'http://maps.googleapis.com/maps/api/geocode/json?latlng=' + longitude + ',' + latitude + '&language=he&sensor=true',
+		success : function(data) {
+			//console.log(data.results[0].formatted_address);
+			/*can also iterate the components for only the city and state*/
+			for ( i = 0; i < data.results[4].address_components.length; i++) {
+				for ( j = 0; j < data.results[4].address_components[i].types.length; j++) {
+					if (data.results[4].address_components[i].types[j] == 'country') {
+						var country_code = data.results[4].address_components[i].long_name;
+						userCountry = country_code;
+						console.log(data.results[1].formatted_address);
+						userLocation = data.results[1].formatted_address;
+					}
+				}
+			}
+		}
+	});
+}
+
+function errorHandler(error) {
+	switch(error.code) {
+		case error.PERMISSION_DENIED:
+			//alert("User denied the request for Geolocation.");
+			break;
+		case error.POSITION_UNAVAILABLE:
+			//alert("Location information is unavailable.");
+			break;
+		case error.TIMEOUT:
+			//alert("The request to get user location timed out.");
+			break;
+		case error.UNKNOWN_ERROR:
+			//alert("An unknown error occurred.");
+			break;
+	}
+	getIpLocation();
+	//ip location
 }
