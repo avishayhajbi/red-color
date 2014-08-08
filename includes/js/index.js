@@ -104,6 +104,7 @@ var refreshData = function() {
 									$.each(res.results, function(i, f) {
 										//console.log(item.city);
 										var tmp = "" + item.city + ", ישראל";
+										if (userLocation == tmp) userLocationAlarm();
 										if (tmp == f.formatted_address || item.city==f.formatted_address) {
 											$("#current_alarms").append(item.city+", ");
 											//Creating new alarm
@@ -162,11 +163,6 @@ function updateAlarmsArray(){
 			currentAlarms.splice(i,1);
 			updateList();
 			}
-/*
-			if (i>0){ 
-				map.setCenter(new google.maps.LatLng(currentAlarms[i-1].lat, currentAlarms[i-1].lng));
-			}
-			i--;*/
 
 		}
 	}
@@ -195,7 +191,13 @@ function playAlertSound() {
 	embed.setAttribute("autostart", true);
 	document.body.appendChild(embed);
 }
-
+function userLocationAlarm(){
+	embed = document.createElement("embed");
+	embed.setAttribute("src", "http://www.xo2.co.il/red_color.mp3");
+	embed.setAttribute("hidden", true);
+	embed.setAttribute("autostart", true);
+	document.body.appendChild(embed);
+}
 
 /* get user location */
 
