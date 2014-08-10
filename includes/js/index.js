@@ -64,8 +64,8 @@ function setAlarm(lon, lat, time) {
 var refreshData = function() {
 	//Retrieveing the Json data output from Pikud Ha Oref
 	$.ajax({
-		//url : "test.php",
-		url : "http://www.israelredcolor.com/alert.php",
+		//url : "http://vandervidi.com/red-color/test.php",
+		url : "http://vandervidi.com/red-color/alert.php",
 		type : 'GET',
 		success : function(res) {
 			// get regions array from Pikud Ha Oref
