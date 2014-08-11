@@ -65,16 +65,14 @@ var refreshData = function() {
 	//Retrieveing the Json data output from Pikud Ha Oref
 	$.ajax({
 		//url : "http://vandervidi.com/red-color/test.php",
-		url : "http://vandervidi.com/red-color/alert.php",
+		//url : "https://query.yahooapis.com/v1/public/yql?q=select * from html where url='http://www.oref.org.il/WarningMessages/alerts.json'&format=json&diagnostics=true",
+		url : "https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20html%20where%20url%3D%22http%3A%2F%2Fwww.mako.co.il%2FCollab%2Famudanan%2Fadom.txt%22%20and%20charset%3D'utf-16'&format=json&callback=",
 		type : 'GET',
 		success : function(res) {
 			// get regions array from Pikud Ha Oref
-			res = res.split(",");
-			//console.log("res before : "+res);
+			/*res = res.split(",");
 			res.splice(res.length-1,1);
-			//if (res[0]==""){res="";} //testing
-			//if (res[0]==" 	"){res="";}
-			//console.log(res);
+
 			switch (res.length){
 				case 1: {map.setZoom(12);break;}
 				case 2: {map.setZoom(11);break;}
@@ -82,7 +80,18 @@ var refreshData = function() {
 				default: {map.setZoom(10);break;}
 			}
 			updateAlarmsArray();
-			if (res.length>0)
+			if (res.length>0)*/
+			
+			var res = res.query.results.body.p;
+			res = JSON.parse(res);
+			switch (res.data.length){
+				case 1: {map.setZoom(12);break;}
+				case 2: {map.setZoom(11);break;}
+				//If the Json data output string from Pikud Ha Oref returns an empty arrey then set zoom to the original value ,10.
+				default: {map.setZoom(10);break;}
+			}
+			updateAlarmsArray();
+			if (res.data.length>0)
 			$.each(res, function(i, region) {
 				$.ajax({
 					url : "includes/json/regions.json",
@@ -238,7 +247,7 @@ function getCountryName(longitude, latitude) {
 					if (data.results[4].address_components[i].types[j] == 'country') {
 						var country_code = data.results[4].address_components[i].long_name;
 						userCountry = country_code;
-						userLocation = data.results[1].formatted_address.split(",")[0];
+						userLocation = data.results[1].formatted_address.split(",")[0].trim();
 						//console.log(userLocation);
 					}
 				}
