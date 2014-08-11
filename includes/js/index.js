@@ -104,8 +104,8 @@ var refreshData = function() {
 									$.each(res.results, function(i, f) {
 										//console.log(item.city);
 										var tmp = "" + item.city + ", ישראל";
-										if (userLocation == tmp) userLocationAlarm();
 										if (tmp == f.formatted_address || item.city==f.formatted_address) {
+											if (f.formatted_address.indexOf(userLocation) != -1) userLocationAlarm();
 											$("#current_alarms").append(item.city+", ");
 											//Creating new alarm
 											setAlarm(f.geometry.location.lat, f.geometry.location.lng, item.time);
@@ -238,8 +238,8 @@ function getCountryName(longitude, latitude) {
 					if (data.results[4].address_components[i].types[j] == 'country') {
 						var country_code = data.results[4].address_components[i].long_name;
 						userCountry = country_code;
-						console.log(data.results[1].formatted_address);
-						userLocation = data.results[1].formatted_address;
+						userLocation = data.results[1].formatted_address.split(",")[0];
+						//console.log(userLocation);
 					}
 				}
 			}
