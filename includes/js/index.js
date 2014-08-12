@@ -66,7 +66,7 @@ var refreshData = function() {
 	$.ajax({
 		//url : "http://vandervidi.com/red-color/test.php",
 		//url : "https://query.yahooapis.com/v1/public/yql?q=select * from html where url='http://www.oref.org.il/WarningMessages/alerts.json'&format=json&diagnostics=true",
-		url : "https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20html%20where%20url%3D%22http%3A%2F%2Fwww.mako.co.il%2FCollab%2Famudanan%2Fadom.txt%22%20and%20charset%3D'utf-16'&format=json&callback=",
+		url : "https://query.yahooapis.com/v1/public/yql?q=select * from html where url='http://www.mako.co.il/Collab/amudanan/adom.txt' and charset='utf-16'&format=json&callback=",
 		type : 'GET',
 		success : function(res) {
 			// get regions array from Pikud Ha Oref
@@ -83,15 +83,16 @@ var refreshData = function() {
 			if (res.length>0)*/
 			
 			var res = res.query.results.body.p;
-			res = JSON.parse(res);
-			switch (res.data.length){
+			res = JSON.parse(res).data;
+			//console.log(res);
+			switch (res.length){
 				case 1: {map.setZoom(12);break;}
 				case 2: {map.setZoom(11);break;}
 				//If the Json data output string from Pikud Ha Oref returns an empty arrey then set zoom to the original value ,10.
 				default: {map.setZoom(10);break;}
 			}
 			updateAlarmsArray();
-			if (res.data.length>0)
+			if (res.length>0)
 			$.each(res, function(i, region) {
 				$.ajax({
 					url : "includes/json/regions.json",
@@ -148,7 +149,7 @@ var refreshData = function() {
 	});
 	setTimeout(function() {
 		refreshData();
-	}, 4000);
+	}, 3000);
 };
 
 function regionAlreadyExist(region){
