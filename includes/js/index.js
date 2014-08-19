@@ -99,6 +99,10 @@ var refreshData = function() {
 					type : 'GET',
 					data : "json",
 					success : function(res) {
+						var mOne = -1;
+						if (region.indexOf("מרחב")!= mOne){
+							region = region.slice(5, str.length);
+						}
 						if (!regionAlreadyExist(region)) {
 							if($("#current_alarms").html()== "אין התרעות כרגע"){
 								$("#current_alarms").html(" ");
@@ -115,7 +119,8 @@ var refreshData = function() {
 										//console.log(item.city);
 										var tmp = "" + item.city + ", ישראל";
 										if (tmp == f.formatted_address || item.city==f.formatted_address) {
-											if (f.formatted_address.indexOf(userLocation) != -1) userLocationAlarm();
+											if (f.formatted_address.indexOf(userLocation) != -1) 
+												userLocationAlarm();
 											$("#current_alarms").append(item.city+", ");
 											//Creating new alarm
 											setAlarm(f.geometry.location.lat, f.geometry.location.lng, item.time);
@@ -249,7 +254,7 @@ function getCountryName(longitude, latitude) {
 						var country_code = data.results[4].address_components[i].long_name;
 						userCountry = country_code;
 						userLocation = data.results[1].formatted_address.split(",")[0].trim();
-						//console.log(userLocation);
+						//console.log(longitude+" "+latitude);
 					}
 				}
 			}
