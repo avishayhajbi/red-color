@@ -103,7 +103,7 @@ var refreshData = function() {
 						if (region.indexOf("מרחב")!= mOne){
 							region = region.slice(5, str.length);
 						}
-						console.log('region',region);
+						//console.log('region',region);
 						if (!regionAlreadyExist(region)) {
 							if($("#current_alarms").html()== "אין התרעות כרגע"){
 								$("#current_alarms").html(" ");
@@ -113,7 +113,7 @@ var refreshData = function() {
 							tempRegion.region=region;
 						$.each(res, function(i, item) {// get city names that match the region , from the regions json file
 							if (item.region == region) {
-								console.log('region found',item.region);
+								//console.log('region found',item.region);
 									$.getJSON('http://maps.googleapis.com/maps/api/geocode/json?address=' + item.city + '&language=he&sensor=true', function(res) {
 									// for each city get the coordinates from google
 									$.each(res.results, function(i, f) {
