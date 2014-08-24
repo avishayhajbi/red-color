@@ -1,7 +1,6 @@
 var centerLan = 31.534559;
 var centerLon = 34.756404;
 var currentAlarms =[];
-var userLocation= null;
 var map;
 
 function currAlarm (region , time,lat,lng) {
@@ -64,82 +63,78 @@ function setAlarm(lon, lat, time) {
 var refreshData = function() {
 	//Retrieveing the Json data output from Pikud Ha Oref
 	$.ajax({
-		//url : "http://vandervidi.com/red-color/test.php",
-		//url : "https://query.yahooapis.com/v1/public/yql?q=select * from html where url='http://www.oref.org.il/WarningMessages/alerts.json'&format=json&diagnostics=true",
-		url : "https://query.yahooapis.com/v1/public/yql?q=select * from html where url='http://www.mako.co.il/Collab/amudanan/adom.txt' and charset='utf-16'&format=json&callback=",
+		//Test file - Need to adjust some variables to make it work.
+		//url : "http://www.israelredcolor.com/test.php",
+		//Source from Mako.co.il
+		//url : "https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20html%20where%20url%3D%22http%3A%2F%2Fwww.mako.co.il%2FCollab%2Famudanan%2Fadom.txt%22%20and%20charset%3D'utf-16'&format=json&callback=",
+		//Source from oref.gov.il
+		url : "https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20html%20where%20url%3D%22http%3A%2F%2Fwww.oref.org.il%2FWarningMessages%2Falerts.json%22%20and%20charset%3D'utf-16'&format=json&callback=",
+
 		type : 'GET',
 		success : function(res) {
-			// get regions array from Pikud Ha Oref
-			/*res = res.split(",");
-			res.splice(res.length-1,1);
-
-			switch (res.length){
-				case 1: {map.setZoom(12);break;}
-				case 2: {map.setZoom(11);break;}
-				//If the Json data output string from Pikud Ha Oref returns an empty arrey then set zoom to the original value ,10.
-				default: {map.setZoom(10);break;}
-			}
-			updateAlarmsArray();
-			if (res.length>0)*/
-			
 			var res = res.query.results.body.p;
-			res = JSON.parse(res).data;
+			res = JSON.parse(res);
 			//console.log(res);
-			switch (res.length){
-				case 1: {map.setZoom(12);break;}
-				case 2: {map.setZoom(11);break;}
-				//If the Json data output string from Pikud Ha Oref returns an empty arrey then set zoom to the original value ,10.
-				default: {map.setZoom(10);break;}
-			}
+			
+			switch (res.data.length){
+							case 1: {map.setZoom(12);break;}
+							case 2: {map.setZoom(11);break;}
+							//If the Json data output string from Pikud Ha Oref returns an empty arrey then set zoom to the original value ,10.
+							default: {map.setZoom(10);break;}
+						}
+			
 			updateAlarmsArray();
-			if (res.length>0)
-			$.each(res, function(i, region) {
+			//console.log(res.data);
+			if (res.data.length>0)
+			//console.log(res.data.length);
+			$.each(res.data, function(i, region) {
+				//console.log("Region:"+ region);
 				$.ajax({
 					url : "includes/json/regions.json",
 					type : 'GET',
 					data : "json",
 					success : function(res) {
+						//Fixing Pikud Ha Oref regions String 
+						//console.log("region before replace:"+ region);
 						region = region.replace('מרחב ','');
 						region = region.replace('עוטף עזה,','');
 						//console.log("region after replace:"+ region);
-						//console.log('region',region);
 						if (!regionAlreadyExist(region)) {
 							if($("#current_alarms").html()== "אין התרעות כרגע"){
 								$("#current_alarms").html(" ");
 							}
 							playAlertSound();
 							var tempRegion = currAlarm();
-							tempRegion.region=region;
-						$.each(res, function(i, item) {// get city names that match the region , from the regions json file
+							tempRegion.region = region;
+
+						$.each(res, function(i, item) {
+							// get city names that match the region , from the regions json file
 							if (item.region == region) {
-								//console.log('region found',item.region);
 									$.getJSON('http://maps.googleapis.com/maps/api/geocode/json?address=' + item.city + '&language=he&sensor=true', function(res) {
 									// for each city get the coordinates from google
-									$.each(res.results, function(i, f) {
-										//console.log(item.city);
-										var tmp = "" + item.city + ", ישראל";
-										if (tmp == f.formatted_address || item.city==f.formatted_address) {
-											if (f.formatted_address.indexOf(userLocation) != -1) 
-												userLocationAlarm();
-											$("#current_alarms").append(item.city+", ");
-											//Creating new alarm
-											setAlarm(f.geometry.location.lat, f.geometry.location.lng, item.time);
-											// This will set the map center to the center of the alarm location
-											map.setCenter(new google.maps.LatLng(f.geometry.location.lat, f.geometry.location.lng));
-											//Return the zoom attribute to its original value after the alarm.
-											//setTimeout(function(){map.setCenter(new google.maps.LatLng(centerLan, centerLon));map.setZoom(10);},item.time*500);
-											//(,item.time,f.geometry.location.lat,f.geometry.location.lng));
-											tempRegion.shelter=item.time;
-											tempRegion.lat = f.geometry.location.lat;
-											tempRegion.lng = f.geometry.location.lng;
-											tempRegion.cities.push(item.city);
-										}
-									});
+										$.each(res.results, function(i, f) {
+											//console.log("item.city: " + item.city);
+											var tmp =  item.city + ", ישראל";
+											if (tmp == f.formatted_address || item.city==f.formatted_address) {
+												$("#current_alarms").append(item.city+", ");
+												//Creating new alarm 
+												setAlarm(f.geometry.location.lat, f.geometry.location.lng, item.time);
+												// This will focus the  map to the center of the alarm location
+												map.setCenter(new google.maps.LatLng(f.geometry.location.lat, f.geometry.location.lng));
+												tempRegion.shelter = item.time;
+												tempRegion.lat = f.geometry.location.lat;
+												tempRegion.lng = f.geometry.location.lng;
+												tempRegion.cities.push(item.city);
+												//console.log(" tempRegion.shelter : "+tempRegion.shelter +" tempRegion.lat: "+ tempRegion.lat+" tempRegion.lng: "+tempRegion.lng +" tempRegion.cities: "+JSON.stringify(tempRegion.cities));
+												currentAlarms.push(tempRegion);
+
+											}
+										});
 								});
 							}
 						});
-						currentAlarms.push(tempRegion);
-						//console.log(currentAlarms);
+						//currentAlarms.push(tempRegion);
+						//console.log("Current Alarms: " + JSON.stringify(currentAlarms));
 						}
 					},
 					error : function(data) {
@@ -154,7 +149,7 @@ var refreshData = function() {
 	});
 	setTimeout(function() {
 		refreshData();
-	}, 3000);
+	}, 2000);
 };
 
 function regionAlreadyExist(region){
@@ -178,6 +173,11 @@ function updateAlarmsArray(){
 			currentAlarms.splice(i,1);
 			updateList();
 			}
+/*
+			if (i>0){ 
+				map.setCenter(new google.maps.LatLng(currentAlarms[i-1].lat, currentAlarms[i-1].lng));
+			}
+			i--;*/
 
 		}
 	}
@@ -205,78 +205,4 @@ function playAlertSound() {
 	embed.setAttribute("hidden", true);
 	embed.setAttribute("autostart", true);
 	document.body.appendChild(embed);
-}
-function userLocationAlarm(){
-	embed = document.createElement("embed");
-	embed.setAttribute("src", "http://www.xo2.co.il/red_color.mp3");
-	embed.setAttribute("hidden", true);
-	embed.setAttribute("autostart", true);
-	document.body.appendChild(embed);
-}
-
-/* get user location */
-
-$(document).ready(function(){
-	getLocation();
-});
-
-function getIpLocation() {
-	$.get("http://ipinfo.io/" + myip, function(response) {
-		//console.log(response); country region city loc
-		console.log(response);
-		longitude = response.loc.substring(0, response.loc.indexOf(","));
-		latitude = response.loc.substring(response.loc.indexOf(",") + 1, response.loc.length);
-		//console.log("IP location - " + longitude + " " + latitude);
-		getCountryName(longitude, latitude);
-	}, "jsonp");
-}
-
-function getLocation() {
-	navigator.geolocation.getCurrentPosition(showPosition, errorHandler);
-}
-
-function showPosition(position) {
-	//console.log("HTML5 location " + position.coords.latitude + " " + position.coords.longitude);
-	longitude = position.coords.latitude;
-	latitude = position.coords.longitude;
-	getCountryName(longitude, latitude);
-}
-
-function getCountryName(longitude, latitude) {
-	$.ajax({
-		url : 'http://maps.googleapis.com/maps/api/geocode/json?latlng=' + longitude + ',' + latitude + '&language=he&sensor=true',
-		success : function(data) {
-			//console.log(data.results[0].formatted_address);
-			/*can also iterate the components for only the city and state*/
-			for ( i = 0; i < data.results[4].address_components.length; i++) {
-				for ( j = 0; j < data.results[4].address_components[i].types.length; j++) {
-					if (data.results[4].address_components[i].types[j] == 'country') {
-						var country_code = data.results[4].address_components[i].long_name;
-						userCountry = country_code;
-						userLocation = data.results[1].formatted_address.split(",")[0].trim();
-						//console.log(longitude+" "+latitude);
-					}
-				}
-			}
-		}
-	});
-}
-
-function errorHandler(error) {
-	switch(error.code) {
-		case error.PERMISSION_DENIED:
-			//alert("User denied the request for Geolocation.");
-			break;
-		case error.POSITION_UNAVAILABLE:
-			//alert("Location information is unavailable.");
-			break;
-		case error.TIMEOUT:
-			//alert("The request to get user location timed out.");
-			break;
-		case error.UNKNOWN_ERROR:
-			//alert("An unknown error occurred.");
-			break;
-	}
-	getIpLocation();
-	//ip location
 }
