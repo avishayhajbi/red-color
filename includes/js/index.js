@@ -73,22 +73,20 @@ var refreshData = function() {
 		type : 'GET',
 		success : function(res) {
 			if (res.query.results){
-				res = res.query.results.body.p;
-				res = JSON.parse(res);
+				res = JSON.parse(res.query.results.body.p).data;
 			}
 			//console.log(res);
-			switch (res.data.length){
+			switch (res.length){
 							case 1: {map.setZoom(12);break;}
 							case 2: {map.setZoom(11);break;}
 							default: {map.setZoom(10);break;}
 						}
 			
 			updateAlarmsArray();
-			//res ={data: ["עוטף עזה 217","עוטף עזה 218"]};
-			//console.log(res.data);
-			if (res.data.length>0)
-			//console.log(res.data.length);
-			$.each(res.data, function(i, region) {
+			//res = ["עוטף עזה 217","עוטף עזה 218"];
+			//console.log(res.length);
+			if (res.length > 0)
+			$.each(res, function(i, region) {
 				//console.log("Region:"+ region);
 				$.ajax({
 					url : "includes/json/temp.json",
