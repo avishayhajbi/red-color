@@ -32,8 +32,8 @@ function initialize() {
 	};
 	map = new google.maps.Map(document.getElementById("map"), mapOptions);
 	refreshData();
+	
 }
-
 function initMapCss() {
 	$("#map").css('width', $(window).width() + "px");
 	$("#map").css('height', $(window).height() + "px");
@@ -72,25 +72,26 @@ var refreshData = function() {
 
 		type : 'GET',
 		success : function(res) {
-			var res = res.query.results.body.p;
-			res = JSON.parse(res);
+			if (res.query.results.body){
+				res = res.query.results.body.p;
+				res = JSON.parse(res);
+			}
 			//console.log(res);
-			
 			switch (res.data.length){
 							case 1: {map.setZoom(12);break;}
 							case 2: {map.setZoom(11);break;}
-							//If the Json data output string from Pikud Ha Oref returns an empty arrey then set zoom to the original value ,10.
 							default: {map.setZoom(10);break;}
 						}
 			
 			updateAlarmsArray();
+			//res ={data: ["עוטף עזה 217","עוטף עזה 218"]};
 			//console.log(res.data);
 			if (res.data.length>0)
 			//console.log(res.data.length);
 			$.each(res.data, function(i, region) {
 				//console.log("Region:"+ region);
 				$.ajax({
-					url : "includes/json/regions.json",
+					url : "includes/json/temp.json",
 					type : 'GET',
 					data : "json",
 					success : function(res) {
@@ -110,29 +111,20 @@ var refreshData = function() {
 						$.each(res, function(i, item) {
 							// get city names that match the region , from the regions json file
 							if (item.region == region) {
-									$.getJSON('http://maps.googleapis.com/maps/api/geocode/json?address=' + item.city + '&language=he&sensor=true', function(res) {
-									// for each city get the coordinates from google
-										$.each(res.results, function(i, f) {
-											//console.log("item.city: " + item.city);
-											var tmp =  item.city + ", ישראל";
-											if (tmp == f.formatted_address || item.city==f.formatted_address) {
 												$("#current_alarms").append(item.city+", ");
 												//Creating new alarm 
-												setAlarm(f.geometry.location.lat, f.geometry.location.lng, item.time);
+												setAlarm(item.long,item.lat , item.time);
 												// This will focus the  map to the center of the alarm location
-												map.setCenter(new google.maps.LatLng(f.geometry.location.lat, f.geometry.location.lng));
+												map.setCenter(new google.maps.LatLng(item.long,item.lat ));
 												tempRegion.shelter = item.time;
-												tempRegion.lat = f.geometry.location.lat;
-												tempRegion.lng = f.geometry.location.lng;
+												tempRegion.lat = item.lat;
+												tempRegion.lng = item.long;
 												tempRegion.cities.push(item.city);
 												//console.log(" tempRegion.shelter : "+tempRegion.shelter +" tempRegion.lat: "+ tempRegion.lat+" tempRegion.lng: "+tempRegion.lng +" tempRegion.cities: "+JSON.stringify(tempRegion.cities));
 												currentAlarms.push(tempRegion);
 
 											}
 										});
-								});
-							}
-						});
 						//currentAlarms.push(tempRegion);
 						//console.log("Current Alarms: " + JSON.stringify(currentAlarms));
 						}
@@ -206,3 +198,9 @@ function playAlertSound() {
 	embed.setAttribute("autostart", true);
 	document.body.appendChild(embed);
 }
+
+
+
+
+
+
