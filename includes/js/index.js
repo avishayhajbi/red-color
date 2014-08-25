@@ -69,10 +69,10 @@ var refreshData = function() {
 		//url : "https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20html%20where%20url%3D%22http%3A%2F%2Fwww.mako.co.il%2FCollab%2Famudanan%2Fadom.txt%22%20and%20charset%3D'utf-16'&format=json&callback=",
 		//Source from oref.gov.il
 		url : "https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20html%20where%20url%3D%22http%3A%2F%2Fwww.oref.org.il%2FWarningMessages%2Falerts.json%22%20and%20charset%3D'utf-16'&format=json&callback=",
-
+		//url : "http://www.israelredcolor.com/scripts/oref.txt",
 		type : 'GET',
 		success : function(res) {
-			if (res.query.results.body){
+			if (res.query.results){
 				res = res.query.results.body.p;
 				res = JSON.parse(res);
 			}
