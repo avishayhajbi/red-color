@@ -193,9 +193,3 @@ function playAlertSound() {
 	embed.setAttribute("autostart", true);
 	document.body.appendChild(embed);
 }
-
-
-
-
-
-
