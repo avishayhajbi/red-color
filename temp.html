@@ -24,65 +24,71 @@
         <script type="text/javascript" src="http://l2.io/ip.js?var=myip"></script>
     </head>
     <body>
-        
-       <article id="current_alarms"> </article>
-        <div id="map"> </div>
+
+        <article id="current_alarms"></article>
+        <div id="map"></div>
         <script>
-            var arr = [];
-window.onload = function readRegionsTemp() {
-    $.getJSON('includes/json/temp.json', function(res) {
-        $.each(res, function(i, item) {
-            setTimeout(function() {
-                $.getJSON('http://maps.googleapis.com/maps/api/geocode/json?address=' + item.city + '&language=he&sensor=true', function(res) {
-                    $.each(res.results, function(i, f) {
-                        var addressFromGoogle = f.formatted_address;
-                        //remove "-" char
-                        addressFromGoogle = addressFromGoogle.replace("-"," ");
-                        item.city = item.city.replace("-"," ");
-                        //remove " char
-                        addressFromGoogle = addressFromGoogle.replace('\"','');
-                        item.city = item.city.replace('\"','');
-                        //remove  char
-                        addressFromGoogle = addressFromGoogle.replace('\'','');
-                        item.city = item.city.replace('\'','');
-                        
-                        var tmp = item.city + ", ישראל";
-                        if (tmp == addressFromGoogle || item.city == addressFromGoogle){
-                            
-                            /*
-                            var line = new Object();
-                                                        line.city = item.city;
-                                                        line.time =  item.time;
-                                                        line.lat = f.geometry.location.lat;
-                                                        line.lng = f.geometry.location.lng;
-                                                        line.region =  item.region;
-                                                        var myJsonString = JSON.stringify(line);
-                                                        console.log(myJsonString);*/
-                            
-                            
-                        }
+			var arr = [];
+			window.onload = function readRegionsTemp() {
+				$.getJSON('includes/json/temp.json', function(res) {
+					$.each(res, function(i, item) {
+						setTimeout(function() {
+							var c = "נגב";
+							if (true) {
+							    //item.city = item.city.replace('\'','"');
+								$.getJSON('http://maps.googleapis.com/maps/api/geocode/json?address=' + item.city + '&language=he&sensor=true', function(res) {
+									$.each(res.results, function(i, f) {
+										var addressFromGoogle = f.formatted_address;
+										//remove "-" char
+										addressFromGoogle = addressFromGoogle.replace("-", " ");
+										item.city = item.city.replace("-", " ");
+										//remove " char
+										addressFromGoogle = addressFromGoogle.replace('\"', '');
+										item.city = item.city.replace('\"', '');
+										//remove  char
+										addressFromGoogle = addressFromGoogle.replace('\'', '');
+										item.city = item.city.replace('\'', '');
 
-                        else{
-                              var line = new Object();
-                                line.city = item.city;
-                                line.time =  item.time;
-                                line.lat = 0;
-                                line.lng = 0;
-                                line.region =  item.region;
-                                var myJsonString = JSON.stringify(line);
-                                console.log(myJsonString);
-                            }
+										addressFromGoogle = addressFromGoogle.replace('\'', '');
+										item.city = item.city.replace('\'', '');
 
-                    });
-                });
-                                }, 100*i);
-        });
-    });
-    //var myJsonString = JSON.stringify(arr);
-    //console.log(myJsonString);
-};
+										var tmp = item.city + ", ישראל";
+										if (tmp == addressFromGoogle || item.city == addressFromGoogle) {
 
+											
+											 var line = new Object();
+											 line.city = item.city;
+											 line.time =  item.time;
+											 line.lat = f.geometry.location.lat;
+											 line.lng = f.geometry.location.lng;
+											 line.region =  item.region;
+											 var myJsonString = JSON.stringify(line);
+											 //console.log(myJsonString);
+											 arr.push(line);
 
+										} else {
+											/*var line = new Object();
+											line.city = item.city;
+											line.time = item.time;
+											line.lat = 0;
+											line.lng = 0;
+											line.region = item.region;
+											var myJsonString = JSON.stringify(line);
+											console.log(myJsonString);*/
+										}
+
+									});
+								});
+							}
+						},100*i);
+					});
+				});
+				
+			};
+function printarr(){
+    var myJsonString = JSON.stringify(arr);
+    console.log(myJsonString);
+}
         </script>
         <!-- Modal -->
     </body>
