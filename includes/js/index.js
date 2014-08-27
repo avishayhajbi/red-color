@@ -91,7 +91,7 @@ var refreshData = function() {
 			if (res.length > 0)
 				$.each(res, function(i, region) {
 					$.ajax({
-						url : "includes/json/oref.json",
+						url : "includes/json/regions.json",
 						type : 'GET',
 						data : "json",
 						success : function(res) {
@@ -105,17 +105,17 @@ var refreshData = function() {
 								playAlertSound();
 								$.each(res, function(i, item) {
 									// get city names that match the region , from the regions json file
-									if ((item.ExcelAreaName+" "+item.ExcelAreaNumber) == region) { 
-										console.log("city match " + item.ExcelPlaceName);
-										$("#current_alarms").append(item.ExcelPlaceName + ", ");
+									if ((item.region) == region) { 
+										// console.log("city match " + item.city);
+										$("#current_alarms").append(item.city + ", ");
 										//Creating new alarm (red circle)
-										setAlarm(item.ExcelPlaceLatitude, item.ExcelPlaceLongitude, item.ExcelTimeToShow);
+										setAlarm(item.lat, item.lng, item.time);
 										// This will focus the  map to the center of the alarm location
-										map.setCenter(new google.maps.LatLng(item.ExcelPlaceLatitude,item.ExcelPlaceLongitude ));
-										tempRegion.shelter = item.ExcelTimeToShow;
-										tempRegion.lat = item.ExcelPlaceLatitude;
-										tempRegion.lng = item.ExcelPlaceLongitude;
-										tempRegion.cities.push(item.ExcelPlaceName);
+										map.setCenter(new google.maps.LatLng(item.lat,item.lng ));
+										tempRegion.shelter = item.time;
+										tempRegion.lat = item.lat;
+										tempRegion.lng = item.lng;
+										tempRegion.cities.push(item.city);
 										currentAlarms.push(tempRegion);
 									}
 								});
